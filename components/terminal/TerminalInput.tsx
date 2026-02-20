@@ -34,8 +34,11 @@ export default function TerminalInput({
   };
 
   return (
-    <div className="flex items-center gap-2 font-mono text-sm">
-      <span className="text-[#8b5cf6] shrink-0">{prompt}</span>
+    <div className="flex items-center gap-2 font-mono text-xs sm:text-sm">
+      <span className="text-[#8b5cf6] shrink-0">
+        <span className="hidden sm:inline">{prompt}</span>
+        <span className="sm:hidden">~$</span>
+      </span>
       <input
         ref={inputRef}
         type="text"
@@ -48,7 +51,7 @@ export default function TerminalInput({
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={onKeyDown}
         className="flex-1 bg-transparent text-[#e2e2f0] outline-none caret-[#8b5cf6] placeholder-[#6b6b7f]"
-        placeholder="type 'help' to get started..."
+        placeholder="type 'help'..."
       />
     </div>
   );

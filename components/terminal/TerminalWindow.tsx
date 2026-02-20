@@ -74,7 +74,7 @@ export default function TerminalWindow() {
   };
 
   return (
-    <div className="flex flex-col w-full max-w-4xl mx-auto rounded-2xl overflow-hidden border border-[var(--border-color)] bg-[#0d0d14] shadow-[0_20px_60px_rgba(0,0,0,0.6)]" style={{ colorScheme: "dark" }}>
+    <div className="flex flex-col w-full max-w-4xl mx-auto rounded-2xl overflow-x-hidden border border-[var(--border-color)] bg-[#0d0d14] shadow-[0_20px_60px_rgba(0,0,0,0.6)]" style={{ colorScheme: "dark" }}>
       {/* Window chrome */}
       <div className="flex items-center gap-2 px-4 py-3 bg-[#13131a] border-b border-[var(--border-color)]">
         <div className="w-3 h-3 rounded-full bg-[#ff5f57]" />
@@ -88,7 +88,7 @@ export default function TerminalWindow() {
       {/* Output area */}
       <div
         ref={scrollRef}
-        className="flex-1 overflow-y-auto p-5 space-y-3"
+        className="flex-1 overflow-y-auto overflow-x-hidden p-3 sm:p-5 space-y-3"
         style={{ minHeight: "60vh", maxHeight: "70vh" }}
         onClick={() => {
           const inp = document.querySelector<HTMLInputElement>("input[type=text]");
@@ -102,9 +102,12 @@ export default function TerminalWindow() {
         {history.map((entry, i) => (
           <div key={i} className="space-y-1">
             {entry.command && (
-              <div className="flex items-center gap-2 font-mono text-sm">
-                <span className="text-[#8b5cf6]">jagdeep@portfolio:~$</span>
-                <span className="text-[#e2e2f0]">{entry.command}</span>
+              <div className="flex items-center gap-2 font-mono text-xs sm:text-sm">
+                <span className="text-[#8b5cf6] shrink-0">
+                  <span className="hidden sm:inline">jagdeep@portfolio:~$</span>
+                  <span className="sm:hidden">~$</span>
+                </span>
+                <span className="text-[#e2e2f0] break-all">{entry.command}</span>
               </div>
             )}
             {entry.output.length > 0 && <TerminalOutput lines={entry.output} />}
@@ -113,7 +116,7 @@ export default function TerminalWindow() {
       </div>
 
       {/* Input area */}
-      <div className="px-5 pb-5 pt-2 border-t border-[var(--border-color)]">
+      <div className="px-3 sm:px-5 pb-3 sm:pb-5 pt-2 border-t border-[var(--border-color)]">
         <TerminalInput
           value={input}
           onChange={setInput}

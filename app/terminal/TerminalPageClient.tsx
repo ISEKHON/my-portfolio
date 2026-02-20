@@ -10,7 +10,7 @@ export default function TerminalPageClient() {
     <div className="min-h-screen flex flex-col">
       <Background />
       <Navbar />
-      <main className="flex-1 flex flex-col items-center justify-center px-5 pt-24 pb-24">
+      <main className="flex-1 flex flex-col items-center justify-center px-3 sm:px-5 pt-24 pb-24 overflow-x-hidden">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
