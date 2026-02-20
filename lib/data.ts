@@ -1,3 +1,5 @@
+export type ProjectStatus = "active" | "completed" | "archived";
+
 export const PORTFOLIO = {
   name: "Jagdeep",
   handle: "iSekhon",
@@ -92,7 +94,7 @@ export const PORTFOLIO = {
       description:
         "A powerful graphics and design tool built for mobile. Currently in active development with a focus on performance and intuitive UX.",
       tags: ["Kotlin", "Jetpack Compose", "Android"],
-      status: "active" as const,
+      status: "active" as ProjectStatus,
       category: "Android",
       link: "https://github.com/isekhon",
       githubLink: "https://github.com/ISEKHON",
@@ -105,7 +107,7 @@ export const PORTFOLIO = {
       description:
         "An Android app for fine-tuning drawable resources with a sleek Jetpack Compose UI. Simplifies the workflow for Android designers and developers.",
       tags: ["Kotlin", "Jetpack Compose", "Material Design"],
-      status: "completed" as const,
+      status: "completed" as ProjectStatus,
       category: "Android",
       link: "https://github.com/ISEKHON/DrawableTuner/releases/tag/v1.0.0",
       githubLink: "https://github.com/ISEKHON/DrawableTuner",
@@ -118,7 +120,7 @@ export const PORTFOLIO = {
       description:
         "A fast-paced, addictive 3D arcade game where you guide a bouncing ball through a helix tower labyrinth. Master the physics, avoid the red zones, and smash through platforms to reach the bottom!",
       tags: ["Javascript", "ThreeJs", "Cannon-es", "Vite"],
-      status: "completed" as const,
+      status: "completed" as ProjectStatus,
       category: "Multiplatform",
       link: "https://towerj.netlify.app/",
       githubLink: "https://github.com/ISEKHON/TowerJumper",
