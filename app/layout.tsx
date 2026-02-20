@@ -3,6 +3,7 @@ import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/context/ThemeContext";
 import ScrollProgress from "@/components/ui/ScrollProgress";
+import { Analytics } from "@vercel/analytics/next";
 
 
 const inter = Inter({
@@ -57,6 +58,7 @@ export default function RootLayout({
         <ThemeProvider>
           <ScrollProgress />
           {children}
+          <Analytics />
         </ThemeProvider>
       </body>
     </html>
