@@ -67,6 +67,8 @@ export default function ContactPageClient() {
       } else {
         setStatus("success");
         setForm({ name: "", email: "", message: "" });
+        const confetti = (await import("canvas-confetti")).default;
+        confetti({ particleCount: 120, spread: 80, origin: { x: 0.5, y: 0.6 }, colors: ["#8b5cf6", "#6366f1", "#a78bfa", "#c4b5fd", "#e9d5ff"] });
       }
     } catch {
       setErrorMsg("Network error. Please try again.");
