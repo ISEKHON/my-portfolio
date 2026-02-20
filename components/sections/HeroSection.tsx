@@ -75,7 +75,7 @@ export default function HeroSection() {
             {/* Stats */}
             <motion.div
               variants={fadeInUp}
-              className="grid grid-cols-3 gap-6 pt-6 border-t border-[var(--border-color)]"
+              className="grid grid-cols-3 gap-3 md:gap-6 pt-6 border-t border-[var(--border-color)]"
             >
               {PORTFOLIO.stats.map((stat) => (
                 <CounterStat

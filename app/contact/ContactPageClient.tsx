@@ -82,7 +82,7 @@ export default function ContactPageClient() {
       <Background />
       <Navbar />
       <main className="flex-1 pt-28 pb-24 px-5">
-        <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-16 items-start">
+        <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-8 lg:gap-16 items-start">
 
           {/* Left — header + contact links */}
           <motion.div
@@ -166,7 +166,7 @@ export default function ContactPageClient() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.15 }}
           >
-            <div className="p-8 rounded-2xl border border-[var(--border-color)] bg-[var(--bg-secondary)]">
+            <div className="p-5 md:p-8 rounded-2xl border border-[var(--border-color)] bg-[var(--bg-secondary)]">
               <h2 className="text-xl font-bold text-[var(--text-primary)] mb-1">Send a Message</h2>
               <p className="text-sm text-[var(--text-muted)] mb-6">
                 Goes straight to my Telegram — I&apos;ll reply fast.
