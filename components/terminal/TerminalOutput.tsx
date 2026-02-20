@@ -19,7 +19,11 @@ export default function TerminalOutput({ lines }: TerminalOutputProps) {
       {lines.map((line, i) => (
         <div
           key={i}
-          className={`font-mono text-sm leading-6 whitespace-pre-wrap break-all ${typeClass[line.type]}`}
+          className={`font-mono text-sm leading-6 ${
+            line.type === "ascii"
+              ? "whitespace-pre overflow-x-visible"
+              : "whitespace-pre-wrap break-all"
+          } ${typeClass[line.type]}`}
         >
           {line.text || "\u00A0"}
         </div>

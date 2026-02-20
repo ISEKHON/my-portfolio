@@ -24,49 +24,10 @@ const HELP_TEXT: TerminalLine[] = [
   { type: "output", text: "  ls         — List directory" },
   { type: "output", text: "  cat bio    — Read bio" },
   { type: "output", text: "  neofetch   — System info" },
+  { type: "output", text: "  date       — Show current date/time" },
   { type: "output", text: "  theme      — Toggle dark/light mode" },
   { type: "output", text: "  clear      — Clear terminal" },
   { type: "output", text: "  exit       — Go back to home" },
-];
-
-const NEOFETCH: TerminalLine[] = [
-  {
-    type: "ascii",
-    text: "  ██╗███████╗███████╗██╗  ██╗ ██████╗ ███╗  ██╗",
-  },
-  {
-    type: "ascii",
-    text: "  ██║██╔════╝██╔════╝██║ ██╔╝██╔═══██╗████╗ ██║",
-  },
-  {
-    type: "ascii",
-    text: "  ██║███████╗█████╗  █████╔╝ ██║   ██║██╔██╗██║",
-  },
-  {
-    type: "ascii",
-    text: "  ██║╚════██║██╔══╝  ██╔═██╗ ██║   ██║██║╚████║",
-  },
-  {
-    type: "ascii",
-    text: "  ██║███████║███████╗██║  ██╗╚██████╔╝██║ ╚███║",
-  },
-  {
-    type: "ascii",
-    text: "  ╚═╝╚══════╝╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚══╝",
-  },
-  { type: "empty", text: "" },
-  { type: "accent", text: `  ${PORTFOLIO.handle}@portfolio` },
-  { type: "output", text: "  ─────────────────────────" },
-  { type: "output", text: `  OS: Android / Web` },
-  { type: "output", text: `  Host: ${PORTFOLIO.name}'s Portfolio` },
-  {
-    type: "output",
-    text: `  Packages: ${PORTFOLIO.skills.reduce((a, b) => a + b.items.length, 0)} skills`,
-  },
-  { type: "output", text: `  Shell: Next.js 16 + TypeScript` },
-  { type: "output", text: `  Theme: Cyberpunk Dark` },
-  { type: "output", text: `  Location: ${PORTFOLIO.location}` },
-  { type: "output", text: `  Email: ${PORTFOLIO.email}` },
 ];
 
 export const COMMANDS: Record<string, CommandFn> = {
@@ -144,7 +105,31 @@ export const COMMANDS: Record<string, CommandFn> = {
     return [{ type: "error", text: `cat: ${args[0] || "(none)"}: No such file` }];
   },
 
-  neofetch: () => NEOFETCH,
+  neofetch: (_args, ctx) => {
+    const pkg = PORTFOLIO.skills.reduce((a, b) => a + b.items.length, 0);
+    const theme = ctx.theme === "light" ? "Light Mode" : "Cyberpunk Dark";
+    const pad = (k: string) => k.padEnd(12);
+    return [
+      { type: "output", text: "  +----------------------------------------+" },
+      { type: "accent", text: "  |        iSekhon  @  portfolio            |" },
+      { type: "output", text: "  +----------------------------------------+" },
+      { type: "empty",  text: "" },
+      { type: "output", text: `  ${pad("OS")}  Android / Web` },
+      { type: "output", text: `  ${pad("Host")}  ${PORTFOLIO.name}'s Portfolio` },
+      { type: "output", text: `  ${pad("Shell")}  Next.js 16 + TypeScript` },
+      { type: "output", text: `  ${pad("Theme")}  ${theme}` },
+      { type: "output", text: `  ${pad("Packages")}  ${pkg} skills` },
+      { type: "output", text: `  ${pad("Location")}  ${PORTFOLIO.location}` },
+      { type: "output", text: `  ${pad("Email")}  ${PORTFOLIO.email}` },
+      { type: "empty",  text: "" },
+      { type: "output", text: "  +----------------------------------------+" },
+    ];
+  },
+
+  date: () => {
+    const now = new Date();
+    return [{ type: "output", text: now.toLocaleString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit" }) }];
+  },
 
   theme: (_args, ctx) => {
     if (ctx.toggleTheme) {

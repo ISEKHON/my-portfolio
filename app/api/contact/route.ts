@@ -1,7 +1,43 @@
 import { NextRequest, NextResponse } from "next/server";
 
+// In-memory rate limiter: 3 requests per 10 minutes per IP
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+const LIMIT = 3;
+const WINDOW_MS = 10 * 60 * 1000;
+
+function getIP(req: NextRequest): string {
+  return (
+    req.headers.get("x-forwarded-for")?.split(",")[0].trim() ??
+    req.headers.get("x-real-ip") ??
+    "unknown"
+  );
+}
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const entry = rateLimitMap.get(ip);
+
+  if (!entry || now > entry.resetAt) {
+    rateLimitMap.set(ip, { count: 1, resetAt: now + WINDOW_MS });
+    return false;
+  }
+
+  if (entry.count >= LIMIT) return true;
+
+  entry.count++;
+  return false;
+}
+
 export async function POST(req: NextRequest) {
   try {
+    const ip = getIP(req);
+    if (isRateLimited(ip)) {
+      return NextResponse.json(
+        { error: "Too many requests. Please wait 10 minutes before trying again." },
+        { status: 429 }
+      );
+    }
+
     const { name, email, message } = await req.json();
 
     if (!name?.trim() || !email?.trim() || !message?.trim()) {
