@@ -92,7 +92,7 @@ export const PORTFOLIO = {
       id: "falcongfx",
       title: "FalconGFX",
       description:
-        "A powerful graphics and design tool built for mobile. Currently in active development with a focus on performance and intuitive UX.",
+        "A GFX tool for PUBG Mobile and BGMI on Android. Lets players customize graphics settings beyond the in-game limits for smoother gameplay and better visuals. Currently in active development.",
       tags: ["Kotlin", "Jetpack Compose", "Android"],
       status: "active" as ProjectStatus,
       category: "Android",
@@ -105,7 +105,7 @@ export const PORTFOLIO = {
       id: "drawabletuner",
       title: "DrawableTuner",
       description:
-        "An Android app for fine-tuning drawable resources with a sleek Jetpack Compose UI. Simplifies the workflow for Android designers and developers.",
+        "A modern Android app for creating and designing gradient drawables with a beautiful Material 3 UI. Create complex shapes, gradients, and export them as XML code ready to use in your Android projects.",
       tags: ["Kotlin", "Jetpack Compose", "Material Design"],
       status: "active" as ProjectStatus,
       category: "Android",
