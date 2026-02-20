@@ -6,6 +6,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
     },
-    sitemap: "https://isekhon.vercel.app/sitemap.xml",
+    sitemap: "https://isekhon.me/sitemap.xml",
   };
 }
