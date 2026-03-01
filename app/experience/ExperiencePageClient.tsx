@@ -1,6 +1,8 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
+import { animate } from "animejs";
 import Navbar from "@/components/layout/Navbar";
 import Background from "@/components/layout/Background";
 import Footer from "@/components/layout/Footer";
@@ -11,6 +13,28 @@ import { PORTFOLIO } from "@/lib/data";
 import { staggerContainer, fadeInLeft } from "@/lib/variants";
 
 export default function ExperiencePageClient() {
+  const lineRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = lineRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          observer.disconnect();
+          animate(el, {
+            scaleY: [0, 1],
+            duration: 1400,
+            ease: "outCubic",
+          });
+        }
+      },
+      { threshold: 0.05 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div className="min-h-screen">
       <Background />
@@ -35,7 +59,7 @@ export default function ExperiencePageClient() {
           className="relative"
         >
           {/* Vertical line */}
-          <div className="absolute left-4 md:left-5 top-0 bottom-0 w-px bg-gradient-to-b from-[#8b5cf6] via-[#6366f1] to-transparent opacity-30" />
+          <div ref={lineRef} className="absolute left-4 md:left-5 top-0 bottom-0 w-px bg-gradient-to-b from-[#8b5cf6] via-[#6366f1] to-transparent opacity-30" style={{ transformOrigin: "top" }} />
 
           <div className="space-y-10 pl-10 md:pl-14">
             {PORTFOLIO.experience.map((entry, i) => (

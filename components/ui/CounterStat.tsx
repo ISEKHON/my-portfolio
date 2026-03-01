@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { animate } from "animejs";
 
 interface CounterStatProps {
   target: number;
@@ -16,34 +17,32 @@ export default function CounterStat({
   duration = 2000,
 }: CounterStatProps) {
   const [count, setCount] = useState(0);
-  const [started, setStarted] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const started = useRef(false);
 
   useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && !started) {
-          setStarted(true);
+        if (entry.isIntersecting && !started.current) {
+          started.current = true;
+          const obj = { value: 0 };
+          animate(obj, {
+            value: target,
+            duration,
+            ease: "outExpo",
+            onUpdate: () => setCount(Math.floor(obj.value)),
+          });
         }
       },
       { threshold: 0.5 }
     );
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, [started]);
 
-  useEffect(() => {
-    if (!started) return;
-    const start = performance.now();
-    const animate = (now: number) => {
-      const elapsed = now - start;
-      const progress = Math.min(elapsed / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setCount(Math.floor(eased * target));
-      if (progress < 1) requestAnimationFrame(animate);
-    };
-    requestAnimationFrame(animate);
-  }, [started, target, duration]);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [target, duration]);
 
   return (
     <div ref={ref} className="text-center">

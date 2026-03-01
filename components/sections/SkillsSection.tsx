@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { animate } from "animejs";
 import type { IconType } from "react-icons";
 import {
   SiKotlin, SiJavascript, SiTypescript, SiPython,
@@ -75,6 +76,30 @@ function SkillCard({
 }) {
   const labelColor = levelColor[levelLabel] ?? "#6b7280";
   const Icon = SKILL_ICONS[name];
+  const barRef = useRef<HTMLDivElement>(null);
+  const animated = useRef(false);
+
+  useEffect(() => {
+    const el = barRef.current;
+    if (!el) return;
+    animated.current = false;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !animated.current) {
+          animated.current = true;
+          animate(el, {
+            width: [`0%`, `${level}%`],
+            duration: 900,
+            ease: "outCubic",
+            delay: 60,
+          });
+        }
+      },
+      { threshold: 0.3 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [level]);
 
   return (
     <motion.div
@@ -107,13 +132,10 @@ function SkillCard({
 
       {/* Progress bar */}
       <div className="h-1.5 w-full rounded-full bg-[var(--bg-tertiary)] overflow-hidden my-3">
-        <motion.div
+        <div
+          ref={barRef}
           className="h-full rounded-full"
-          style={{ backgroundColor: barColor }}
-          initial={{ width: 0 }}
-          whileInView={{ width: `${level}%` }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.9, delay: 0.05 }}
+          style={{ backgroundColor: barColor, width: 0 }}
         />
       </div>
 
