@@ -14,8 +14,8 @@ export const PORTFOLIO = {
   linkedin: "https://www.linkedin.com/in/jagdeep-singh-224b62194/",
   avatar: "https://github.com/isekhon.png",
   bio: [
-    "I'm a passionate Android developer with a love for building clean, performant, and intuitive mobile applications. My journey started with Kotlin and native Android, and has expanded into cross-platform development with React Native.",
-    "I enjoy tackling complex problems and transforming ideas into polished digital experiences. When I'm not coding, I'm exploring new technologies and contributing to open source projects.",
+    "I'm an Android developer with 4–5 years of experience building clean, performant, and intuitive mobile applications using Kotlin and Jetpack Compose. My journey started with Java and native Android, growing into a deep understanding of the mobile ecosystem.",
+    "Currently expanding my skillset into web development — learning Next.js, Vue.js, and modern frontend stacks. I'm a BCA 2nd year student at Khalsa College, always exploring new technologies and turning ideas into polished digital experiences.",
   ],
   roles: [
     "Android Developer",
@@ -134,8 +134,8 @@ export const PORTFOLIO = {
       title: "Android Developer",
       org: "Freelance / Open Source",
       description:
-        "Building production-grade Android applications with Kotlin and Jetpack Compose. Exploring full-stack development with Next.js and Node.js.",
-      tech: ["Kotlin", "Jetpack Compose", "Next.js", "Firebase"],
+        "Building production-grade Android applications with Kotlin and Jetpack Compose. Actively expanding into web development — learning Next.js, Vue.js, and full-stack patterns.",
+      tech: ["Kotlin", "Jetpack Compose", "Next.js", "Vue.js", "Firebase"],
     },
     {
       year: "2022 – 2024",
@@ -160,6 +160,14 @@ export const PORTFOLIO = {
       description:
         "Wrote my first lines of code. Began with web basics (HTML, CSS) before quickly diving into programming languages and mobile development.",
       tech: ["HTML", "CSS", "JavaScript"],
+    },
+  ],
+  education: [
+    {
+      year: "2024 – Present",
+      degree: "Bachelor of Computer Applications (BCA)",
+      institution: "Khalsa College",
+      description: "Currently pursuing BCA — 2nd year student. Coursework covers data structures, programming, databases, and software engineering fundamentals.",
     },
   ],
   socials: {
