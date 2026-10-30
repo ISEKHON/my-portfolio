@@ -20,7 +20,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const saved = localStorage.getItem("portfolio-theme") as Theme | null;
     if (saved === "light" || saved === "dark") {
-      setTheme(saved);
+      requestAnimationFrame(() => setTheme(saved));
       document.documentElement.setAttribute("data-theme", saved);
     } else {
       document.documentElement.removeAttribute("data-theme");

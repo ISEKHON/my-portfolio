@@ -3,6 +3,7 @@
 import { Sun, Moon } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
 import { motion, AnimatePresence } from "framer-motion";
+import { EASE } from "@/lib/variants";
 
 export default function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
@@ -11,30 +12,19 @@ export default function ThemeToggle() {
     <button
       onClick={toggleTheme}
       aria-label="Toggle theme"
-      className="relative w-9 h-9 flex items-center justify-center rounded-lg border border-[var(--border-color)] bg-[var(--bg-secondary)] hover:border-[#8b5cf6]/50 hover:bg-[#8b5cf6]/10 transition-all duration-200"
+      className="relative w-10 h-10 flex items-center justify-center rounded-full border border-[var(--line)] bg-[var(--bg-2)]/70 backdrop-blur-md overflow-hidden hover:border-[var(--line-strong)] transition-colors"
     >
-      <AnimatePresence mode="wait" initial={false}>
-        {theme === "dark" ? (
-          <motion.div
-            key="sun"
-            initial={{ rotate: -90, opacity: 0 }}
-            animate={{ rotate: 0, opacity: 1 }}
-            exit={{ rotate: 90, opacity: 0 }}
-            transition={{ duration: 0.2 }}
-          >
-            <Sun size={16} className="text-[#8b5cf6]" />
-          </motion.div>
-        ) : (
-          <motion.div
-            key="moon"
-            initial={{ rotate: 90, opacity: 0 }}
-            animate={{ rotate: 0, opacity: 1 }}
-            exit={{ rotate: -90, opacity: 0 }}
-            transition={{ duration: 0.2 }}
-          >
-            <Moon size={16} className="text-[#8b5cf6]" />
-          </motion.div>
-        )}
+      <AnimatePresence mode="popLayout" initial={false}>
+        <motion.span
+          key={theme}
+          initial={{ y: 24, rotate: -90, opacity: 0 }}
+          animate={{ y: 0, rotate: 0, opacity: 1 }}
+          exit={{ y: -24, rotate: 90, opacity: 0 }}
+          transition={{ duration: 0.5, ease: EASE }}
+          className="text-[var(--fg)]"
+        >
+          {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
+        </motion.span>
       </AnimatePresence>
     </button>
   );

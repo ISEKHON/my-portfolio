@@ -8,8 +8,8 @@ const typeClass: Record<TerminalLine["type"], string> = {
   command: "text-[#e2e2f0]",
   output: "text-[#a0a0b0]",
   error: "text-red-400",
-  accent: "text-[#8b5cf6] font-semibold",
-  ascii: "text-[#8b5cf6] font-mono text-xs",
+  accent: "text-[#c8f560] font-semibold",
+  ascii: "text-[#c8f560] font-mono text-xs",
   empty: "",
 };
 

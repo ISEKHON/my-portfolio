@@ -30,10 +30,10 @@ export default function CopyButton({ value, className = "" }: { value: string; c
     <button
       onClick={handleCopy}
       title={copied ? "Copied!" : `Copy ${value}`}
-      className={`inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-mono border transition-all duration-200 ${
+      className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-mono border transition-all duration-200 ${
         copied
-          ? "bg-[#10b981]/10 border-[#10b981]/30 text-[#10b981]"
-          : "bg-[var(--bg-tertiary)] border-[var(--border-color)] text-[var(--text-muted)] hover:border-[#8b5cf6]/40 hover:text-[#8b5cf6]"
+          ? "bg-[var(--accent)] border-transparent text-[var(--accent-ink)]"
+          : "bg-[var(--bg-tertiary)] border-[var(--border-color)] text-[var(--text-muted)] hover:border-[var(--line-strong)] hover:text-[var(--fg)]"
       } ${className}`}
     >
       {copied ? <Check size={11} /> : <Copy size={11} />}

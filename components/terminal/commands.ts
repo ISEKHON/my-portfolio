@@ -107,7 +107,7 @@ export const COMMANDS: Record<string, CommandFn> = {
 
   neofetch: (_args, ctx) => {
     const pkg = PORTFOLIO.skills.reduce((a, b) => a + b.items.length, 0);
-    const theme = ctx.theme === "light" ? "Light Mode" : "Cyberpunk Dark";
+    const theme = ctx.theme === "light" ? "Light Mode" : "Ink Dark";
     const pad = (k: string) => k.padEnd(12);
     return [
       { type: "output", text: "  +----------------------------------------+" },

@@ -1,24 +1,28 @@
 "use client";
 
-import { ExternalLink, Github } from "lucide-react";
+import { ArrowUpRight, Github } from "lucide-react";
 import { motion } from "framer-motion";
-import { fadeInUp } from "@/lib/variants";
+import type { ProjectStatus } from "@/lib/data";
+import { EASE } from "@/lib/variants";
+import ProjectVisual from "@/components/ui/ProjectVisual";
 
-interface ProjectCardProps {
+export interface ProjectCardProps {
   title: string;
   description: string;
   tags: string[];
   link: string;
   githubLink?: string;
+  category: string;
   gradient: { from: string; to: string };
-  status: "active" | "completed" | "archived";
+  status: ProjectStatus;
   progress?: number;
+  index?: number;
 }
 
-const statusLabel = {
-  active: { text: "Active", color: "#f59e0b" },
-  completed: { text: "Completed", color: "#10b981" },
-  archived: { text: "Archived", color: "#6b7280" },
+export const STATUS_META: Record<ProjectStatus, { text: string; color: string }> = {
+  active: { text: "In progress", color: "#fbbf24" },
+  completed: { text: "Shipped", color: "#4ade80" },
+  archived: { text: "Archived", color: "#a8a29e" },
 };
 
 export default function ProjectCard({
@@ -27,97 +31,89 @@ export default function ProjectCard({
   tags,
   link,
   githubLink,
+  category,
   gradient,
   status,
   progress,
+  index = 0,
 }: ProjectCardProps) {
-  const s = statusLabel[status];
+  const s = STATUS_META[status];
 
   return (
-    <motion.div
-      variants={fadeInUp}
-      whileHover={{ y: -6 }}
-      transition={{ duration: 0.3 }}
-      className="group relative flex flex-col rounded-2xl overflow-hidden border border-[var(--border-color)] bg-[var(--bg-secondary)] hover:border-[#8b5cf6]/40 transition-all duration-300 hover:shadow-[0_8px_30px_rgba(139,92,246,0.2)]"
+    <motion.article
+      layout
+      initial={{ opacity: 0, y: 50 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.3 } }}
+      transition={{ duration: 0.8, ease: EASE, delay: index * 0.08 }}
+      className="group flex flex-col"
     >
-      {/* Color header */}
-      <div
-        className="h-2 w-full"
-        style={{
-          background: `linear-gradient(90deg, ${gradient.from}, ${gradient.to})`,
-        }}
-      />
-
-      <div className="p-6 flex flex-col flex-1">
-        <div className="flex items-start justify-between gap-3 mb-3">
-          <h3 className="text-lg font-bold text-[var(--text-primary)]">{title}</h3>
-          <span
-            className="shrink-0 text-xs font-mono px-2 py-0.5 rounded-full border"
-            style={{ color: s.color, borderColor: `${s.color}40`, backgroundColor: `${s.color}10` }}
-          >
+      <a href={link} target="_blank" rel="noopener noreferrer" data-cursor="Open" className="block">
+        <div className="relative overflow-hidden rounded-[22px]">
+          <ProjectVisual
+            title={title}
+            category={category}
+            gradient={gradient}
+            className="aspect-[4/3] transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[0.97]"
+          />
+          <span className="absolute top-4 left-4 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/40 backdrop-blur-md text-white font-mono text-[10px] uppercase tracking-[0.15em]">
+            <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: s.color }} />
             {s.text}
           </span>
         </div>
-        <p className="text-sm text-[var(--text-secondary)] leading-relaxed flex-1 mb-4">
-          {description}
-        </p>
+      </a>
 
-        {/* Progress bar */}
+      <div className="pt-5 flex flex-col flex-1">
+        <div className="flex items-start justify-between gap-4 mb-2">
+          <h3 className="font-display text-2xl font-semibold tracking-tight">{title}</h3>
+          <span className="font-mono text-xs text-[var(--fg-3)] mt-2">{category}</span>
+        </div>
+        <p className="text-sm text-[var(--fg-2)] leading-relaxed mb-4 flex-1">{description}</p>
+
         {progress !== undefined && (
-          <div className="mb-4 space-y-1.5">
-            <div className="flex items-center justify-between text-xs">
-              <span className="text-[var(--text-muted)]">Progress</span>
-              <span className="font-mono font-semibold" style={{ color: s.color }}>
-                {progress}%
-              </span>
-            </div>
-            <div className="h-1.5 w-full rounded-full bg-[var(--bg-tertiary)] overflow-hidden">
+          <div className="mb-4 flex items-center gap-3">
+            <div className="h-[3px] flex-1 rounded-full bg-[var(--bg-3)] overflow-hidden">
               <motion.div
-                className="h-full rounded-full"
-                style={{
-                  background: `linear-gradient(90deg, ${gradient.from}, ${gradient.to})`,
-                }}
-                initial={{ width: 0 }}
-                whileInView={{ width: `${progress}%` }}
+                className="h-full rounded-full origin-left"
+                style={{ background: `linear-gradient(90deg, ${gradient.from}, ${gradient.to})` }}
+                initial={{ scaleX: 0 }}
+                whileInView={{ scaleX: progress / 100 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.9, delay: 0.2 }}
+                transition={{ duration: 1.4, ease: EASE, delay: 0.2 }}
               />
             </div>
+            <span className="font-mono text-xs text-[var(--fg-3)] tabular-nums">{progress}%</span>
           </div>
         )}
 
-        <div className="flex flex-wrap gap-2 mb-5">
+        <div className="flex flex-wrap items-center gap-2">
           {tags.map((tag) => (
-            <span
-              key={tag}
-              className="text-xs px-2 py-0.5 rounded-md bg-[var(--bg-tertiary)] text-[var(--text-muted)] border border-[var(--border-color)]"
-            >
+            <span key={tag} className="text-xs px-3 py-1 rounded-full border border-[var(--line)] text-[var(--fg-2)]">
               {tag}
             </span>
           ))}
-        </div>
-
-        <div className="flex gap-3 mt-auto">
           {githubLink && (
             <a
               href={githubLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1.5 text-xs text-[var(--text-secondary)] hover:text-[#8b5cf6] transition-colors"
+              aria-label={`${title} source code`}
+              className="ml-auto w-9 h-9 rounded-full border border-[var(--line)] flex items-center justify-center text-[var(--fg-2)] hover:text-[var(--bg)] hover:bg-[var(--fg)] transition-colors"
             >
-              <Github size={14} /> Code
+              <Github size={15} />
             </a>
           )}
           <a
             href={link}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1.5 text-xs text-[#8b5cf6] hover:text-[#6366f1] transition-colors ml-auto"
+            aria-label={`Open ${title}`}
+            className={`${githubLink ? "" : "ml-auto"} w-9 h-9 rounded-full bg-[var(--accent)] text-[var(--accent-ink)] flex items-center justify-center transition-transform duration-500 hover:rotate-45`}
           >
-            View <ExternalLink size={14} />
+            <ArrowUpRight size={16} />
           </a>
         </div>
       </div>
-    </motion.div>
+    </motion.article>
   );
 }

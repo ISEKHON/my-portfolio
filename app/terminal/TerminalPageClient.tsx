@@ -1,36 +1,33 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Navbar from "@/components/layout/Navbar";
-import Background from "@/components/layout/Background";
 import TerminalWindow from "@/components/terminal/TerminalWindow";
+import SplitText from "@/components/motion/SplitText";
+import { EASE } from "@/lib/variants";
 
 export default function TerminalPageClient() {
   return (
-    <div className="min-h-screen flex flex-col">
-      <Background />
-      <Navbar />
-      <main className="flex-1 flex flex-col items-center justify-center px-3 sm:px-5 pt-24 pb-24 overflow-x-hidden">
+    <main className="min-h-screen flex flex-col items-center justify-center px-3 sm:px-5 pt-32 pb-24 overflow-x-hidden">
+      <div className="w-full max-w-4xl">
+        <div className="text-center mb-10">
+          <span className="inline-block font-mono text-xs uppercase tracking-[0.2em] text-[var(--fg-3)] mb-4">
+            Interactive
+          </span>
+          <h1 className="font-display text-5xl md:text-7xl font-semibold tracking-[-0.04em] leading-[0.95]">
+            <SplitText text="Portfolio" />{" "}
+            <SplitText text="terminal." className="serif-accent text-[var(--accent-text)]" delay={0.1} />
+          </h1>
+          <p className="text-[var(--fg-2)] mt-4">Explore my portfolio through the command line.</p>
+        </div>
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="w-full"
+          initial={{ opacity: 0, y: 60, scale: 0.96, rotateX: 12 }}
+          animate={{ opacity: 1, y: 0, scale: 1, rotateX: 0 }}
+          transition={{ duration: 1.1, ease: EASE, delay: 0.2 }}
+          style={{ transformPerspective: 1200 }}
         >
-          <div className="text-center mb-8">
-            <span className="inline-block text-xs font-mono font-semibold tracking-widest uppercase text-[#8b5cf6] mb-3 px-3 py-1 border border-[#8b5cf6]/30 rounded-full bg-[#8b5cf6]/10">
-              Interactive
-            </span>
-            <h1 className="text-3xl md:text-4xl font-extrabold text-[var(--text-primary)] mt-2">
-              Portfolio Terminal
-            </h1>
-            <p className="text-[var(--text-secondary)] mt-2 text-sm">
-              Explore my portfolio through the command line
-            </p>
-          </div>
           <TerminalWindow />
         </motion.div>
-      </main>
-    </div>
+      </div>
+    </main>
   );
 }

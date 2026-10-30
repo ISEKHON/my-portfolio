@@ -74,9 +74,9 @@ export default function TerminalWindow() {
   };
 
   return (
-    <div className="flex flex-col w-full max-w-4xl mx-auto rounded-2xl overflow-x-hidden border border-[var(--border-color)] bg-[#0d0d14] shadow-[0_20px_60px_rgba(0,0,0,0.6)]" style={{ colorScheme: "dark" }}>
+    <div className="flex flex-col w-full max-w-4xl mx-auto rounded-2xl overflow-x-hidden border border-[var(--border-color)] bg-[#0d0d0e] shadow-[0_40px_120px_-20px_rgba(0,0,0,0.6)]" style={{ colorScheme: "dark" }}>
       {/* Window chrome */}
-      <div className="flex items-center gap-2 px-4 py-3 bg-[#13131a] border-b border-[var(--border-color)]">
+      <div className="flex items-center gap-2 px-4 py-3 bg-[#151517] border-b border-[var(--border-color)]">
         <div className="w-3 h-3 rounded-full bg-[#ff5f57]" />
         <div className="w-3 h-3 rounded-full bg-[#febc2e]" />
         <div className="w-3 h-3 rounded-full bg-[#28c840]" />
@@ -88,6 +88,7 @@ export default function TerminalWindow() {
       {/* Output area */}
       <div
         ref={scrollRef}
+        data-lenis-prevent
         className="flex-1 overflow-y-auto overflow-x-hidden p-3 sm:p-5 space-y-3"
         style={{ minHeight: "60vh", maxHeight: "70vh" }}
         onClick={() => {
@@ -103,7 +104,7 @@ export default function TerminalWindow() {
           <div key={i} className="space-y-1">
             {entry.command && (
               <div className="flex items-center gap-2 font-mono text-xs sm:text-sm">
-                <span className="text-[#8b5cf6] shrink-0">
+                <span className="text-[#c8f560] shrink-0">
                   <span className="hidden sm:inline">jagdeep@portfolio:~$</span>
                   <span className="sm:hidden">~$</span>
                 </span>

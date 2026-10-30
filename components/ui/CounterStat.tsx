@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { animate } from "animejs";
+import { useEffect, useRef } from "react";
+import { animate, motion, useInView, useMotionValue, useTransform } from "framer-motion";
 
 interface CounterStatProps {
   target: number;
@@ -10,47 +10,25 @@ interface CounterStatProps {
   duration?: number;
 }
 
-export default function CounterStat({
-  target,
-  label,
-  suffix = "+",
-  duration = 2000,
-}: CounterStatProps) {
-  const [count, setCount] = useState(0);
+export default function CounterStat({ target, label, suffix = "+", duration = 2.2 }: CounterStatProps) {
   const ref = useRef<HTMLDivElement>(null);
-  const started = useRef(false);
+  const inView = useInView(ref, { once: true, margin: "-10% 0px" });
+  const value = useMotionValue(0);
+  const display = useTransform(value, (v) => Math.round(v).toString());
 
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !started.current) {
-          started.current = true;
-          const obj = { value: 0 };
-          animate(obj, {
-            value: target,
-            duration,
-            ease: "outExpo",
-            onUpdate: () => setCount(Math.floor(obj.value)),
-          });
-        }
-      },
-      { threshold: 0.5 }
-    );
-
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [target, duration]);
+    if (!inView) return;
+    const controls = animate(value, target, { duration, ease: [0.16, 1, 0.3, 1] });
+    return () => controls.stop();
+  }, [inView, target, duration, value]);
 
   return (
-    <div ref={ref} className="text-center">
-      <div className="text-3xl md:text-4xl font-extrabold gradient-text font-mono">
-        {count}
-        {suffix}
+    <div ref={ref} className="border-t border-[var(--line)] pt-5">
+      <div className="font-display text-5xl md:text-6xl font-semibold tracking-tight tabular-nums">
+        <motion.span>{display}</motion.span>
+        <span className="text-[var(--accent-text)]">{suffix}</span>
       </div>
-      <div className="text-sm text-[var(--text-muted)] mt-1 font-medium">{label}</div>
+      <div className="mt-2 text-sm text-[var(--fg-3)]">{label}</div>
     </div>
   );
 }

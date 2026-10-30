@@ -1,109 +1,78 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Mail, MessageCircle, Send, Github, Twitter, Linkedin } from "lucide-react";
+import { useRef } from "react";
+import Link from "next/link";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { ArrowUpRight, Mail, MessageCircle, Send } from "lucide-react";
 import { PORTFOLIO } from "@/lib/data";
-import SectionHeader from "@/components/ui/SectionHeader";
-import { staggerContainer, fadeInUp } from "@/lib/variants";
+import SplitText from "@/components/motion/SplitText";
+import Magnetic from "@/components/motion/Magnetic";
+import Reveal from "@/components/motion/Reveal";
 
-const CONTACTS = [
-  {
-    icon: Mail,
-    label: "Email",
-    value: PORTFOLIO.email,
-    href: `mailto:${PORTFOLIO.email}`,
-    color: "#8b5cf6",
-  },
-  {
-    icon: MessageCircle,
-    label: "Discord",
-    value: PORTFOLIO.discord.tag,
-    href: PORTFOLIO.socials.discord,
-    color: "#5865F2",
-  },
-  {
-    icon: Send,
-    label: "Telegram",
-    value: PORTFOLIO.telegram,
-    href: PORTFOLIO.telegramUrl,
-    color: "#2AABEE",
-  },
+const CHANNELS = [
+  { icon: Mail, label: "Email", value: PORTFOLIO.email, href: `mailto:${PORTFOLIO.email}` },
+  { icon: MessageCircle, label: "Discord", value: PORTFOLIO.discord.tag, href: PORTFOLIO.socials.discord },
+  { icon: Send, label: "Telegram", value: PORTFOLIO.telegram, href: PORTFOLIO.telegramUrl },
 ];
 
 export default function ContactSection() {
+  const ref = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end end"] });
+  const x = useTransform(scrollYProgress, [0, 1], ["-12%", "0%"]);
+  const rotate = useTransform(scrollYProgress, [0, 1], [-90, 0]);
+
   return (
-    <section id="contact" className="py-24 px-5">
+    <section ref={ref} id="contact" className="relative py-28 md:py-40 px-5 md:px-8 overflow-hidden">
       <div className="max-w-7xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-12"
-        >
-          <SectionHeader
-            tag="Contact"
-            title="Get In Touch"
-            subtitle="Have a project in mind? Let's build something amazing together."
-            center
-          />
-        </motion.div>
+        <Reveal y={16}>
+          <span className="inline-flex items-center gap-3 font-mono text-xs uppercase tracking-[0.2em] text-[var(--fg-3)] mb-10">
+            <span className="text-[var(--accent-text)]">(05)</span> Contact
+            <span className="h-px w-10 bg-[var(--line-strong)]" />
+          </span>
+        </Reveal>
 
-        <motion.div
-          variants={staggerContainer}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="grid sm:grid-cols-3 gap-5 mb-10"
+        <motion.h2
+          style={{ x }}
+          className="font-display font-semibold tracking-[-0.05em] leading-[0.9] text-[15vw] md:text-[11vw] xl:text-[10rem]"
         >
-          {CONTACTS.map(({ icon: Icon, label, value, href, color }) => (
-            <motion.a
-              key={label}
-              variants={fadeInUp}
-              href={href}
-              target="_blank"
-              rel="noopener noreferrer"
-              whileHover={{ y: -4, borderColor: `${color}60` }}
-              className="flex flex-col items-center gap-3 p-6 rounded-2xl border border-[var(--border-color)] bg-[var(--bg-secondary)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.2)] transition-all duration-300 text-center"
-            >
-              <div
-                className="w-12 h-12 flex items-center justify-center rounded-xl"
-                style={{ backgroundColor: `${color}20`, border: `1px solid ${color}30` }}
+          <SplitText text="Let's work" />
+          <br />
+          <SplitText text="together" className="serif-accent text-[var(--accent-text)]" delay={0.15} />
+        </motion.h2>
+
+        <div className="relative mt-16 md:mt-20 border-t border-[var(--line)] pt-10 grid gap-10 md:grid-cols-[1fr_auto] items-center">
+          <div className="grid sm:grid-cols-3 gap-6">
+            {CHANNELS.map(({ icon: Icon, label, value, href }, i) => (
+              <Reveal key={label} delay={i * 0.08}>
+                <a href={href} target="_blank" rel="noopener noreferrer" className="group block">
+                  <span className="flex items-center gap-2 font-mono text-xs uppercase tracking-[0.2em] text-[var(--fg-3)] mb-2">
+                    <Icon size={13} /> {label}
+                  </span>
+                  <span className="inline-flex items-center gap-1 text-[var(--fg)] font-medium break-all">
+                    {value}
+                    <ArrowUpRight size={16} className="shrink-0 opacity-0 -translate-x-1 translate-y-1 group-hover:opacity-100 group-hover:translate-x-0 group-hover:translate-y-0 transition-all duration-300" />
+                  </span>
+                </a>
+              </Reveal>
+            ))}
+          </div>
+
+          <motion.div style={{ rotate }} className="justify-self-start md:justify-self-end">
+            <Magnetic strength={0.4}>
+              <Link
+                href="/contact"
+                data-cursor="Say hi"
+                className="group relative w-40 h-40 md:w-48 md:h-48 rounded-full bg-[var(--accent)] text-[var(--accent-ink)] flex flex-col items-center justify-center font-semibold overflow-hidden"
               >
-                <Icon size={22} style={{ color }} />
-              </div>
-              <div>
-                <div className="text-xs text-[var(--text-muted)] font-mono mb-0.5">{label}</div>
-                <div className="text-sm font-semibold text-[var(--text-primary)]">{value}</div>
-              </div>
-            </motion.a>
-          ))}
-        </motion.div>
-
-        {/* Social row */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="flex justify-center gap-4"
-        >
-          {[
-            { href: PORTFOLIO.socials.github, icon: Github, label: "GitHub" },
-            { href: PORTFOLIO.socials.twitter, icon: Twitter, label: "Twitter" },
-            { href: PORTFOLIO.socials.linkedin, icon: Linkedin, label: "LinkedIn" },
-          ].map(({ href, icon: Icon, label }) => (
-            <a
-              key={label}
-              href={href}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={label}
-              className="w-10 h-10 flex items-center justify-center rounded-xl border border-[var(--border-color)] bg-[var(--bg-secondary)] text-[var(--text-muted)] hover:text-[#8b5cf6] hover:border-[#8b5cf6]/40 transition-all"
-            >
-              <Icon size={18} />
-            </a>
-          ))}
-        </motion.div>
+                <span className="absolute inset-0 rounded-full bg-[var(--fg)] scale-0 group-hover:scale-100 transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]" />
+                <span className="relative z-10 flex flex-col items-center gap-1 transition-colors duration-500 group-hover:text-[var(--bg)]">
+                  <ArrowUpRight size={28} className="transition-transform duration-500 group-hover:rotate-45" />
+                  Get in touch
+                </span>
+              </Link>
+            </Magnetic>
+          </motion.div>
+        </div>
       </div>
     </section>
   );

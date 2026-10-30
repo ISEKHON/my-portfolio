@@ -1,134 +1,147 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useRef } from "react";
 import Link from "next/link";
-import TypeWriter from "@/components/ui/TypeWriter";
-import CounterStat from "@/components/ui/CounterStat";
+import Image from "next/image";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import { ArrowDownRight, ArrowUpRight } from "lucide-react";
 import { PORTFOLIO } from "@/lib/data";
-import { staggerContainer, fadeInLeft, fadeInRight, fadeInUp } from "@/lib/variants";
-import { ArrowRight, MessageCircle, Code2, Lightbulb, Rocket, type LucideIcon } from "lucide-react";
-
-const CARD_ICONS: Record<string, LucideIcon> = {
-  Code2,
-  Lightbulb,
-  Rocket,
-};
+import { EASE } from "@/lib/variants";
+import { useIntroDone } from "@/components/motion/IntroProvider";
+import SplitText from "@/components/motion/SplitText";
+import Magnetic from "@/components/motion/Magnetic";
+import RoleRotator from "@/components/ui/RoleRotator";
+import CircleBadge from "@/components/ui/CircleBadge";
+import LocalTime from "@/components/ui/LocalTime";
 
 export default function HeroSection() {
+  const play = useIntroDone();
+  const ref = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
+  const smooth = useSpring(scrollYProgress, { stiffness: 120, damping: 30, mass: 0.4 });
+  const nameY = useTransform(smooth, [0, 1], ["0%", "45%"]);
+  const nameScale = useTransform(smooth, [0, 1], [1, 0.88]);
+  const contentY = useTransform(smooth, [0, 1], ["0%", "-30%"]);
+  const fade = useTransform(smooth, [0, 0.7], [1, 0]);
+
+  const fadeUp = (delay: number) => ({
+    initial: { opacity: 0, y: 30 },
+    animate: play ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 },
+    transition: { duration: 1, ease: EASE, delay },
+  });
+
   return (
-    <section
-      id="home"
-      className="relative min-h-screen flex items-center pt-16 pb-24 px-5"
-    >
-      <div className="max-w-7xl mx-auto w-full">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Left column */}
-          <motion.div
-            variants={staggerContainer}
-            initial="hidden"
-            animate="visible"
-          >
-            <motion.div variants={fadeInUp} className="mb-4">
-              <span className="inline-flex items-center gap-2 text-xs font-mono font-semibold tracking-widest uppercase text-[#8b5cf6] px-3 py-1.5 border border-[#8b5cf6]/30 rounded-full bg-[#8b5cf6]/10">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#8b5cf6] animate-pulse" />
-                Available for opportunities
-              </span>
-            </motion.div>
+    <section ref={ref} id="home" className="relative min-h-[100svh] flex flex-col pt-28 pb-10 px-5 md:px-8 overflow-hidden">
+      <div className="absolute inset-0 grid-lines opacity-60 pointer-events-none" aria-hidden />
 
-            <motion.h1
-              variants={fadeInUp}
-              className="text-4xl md:text-5xl lg:text-6xl font-black leading-tight mb-4"
-            >
-              Hi, I&apos;m{" "}
-              <span className="gradient-text">{PORTFOLIO.name}</span>
-            </motion.h1>
-
-            <motion.div
-              variants={fadeInUp}
-              className="text-xl md:text-2xl font-mono text-[var(--text-secondary)] mb-6 h-8"
-            >
-              <TypeWriter phrases={PORTFOLIO.roles} />
-            </motion.div>
-
-            <motion.p
-              variants={fadeInUp}
-              className="text-[var(--text-secondary)] max-w-lg leading-relaxed mb-8"
-            >
-              {PORTFOLIO.bio[0]}
-            </motion.p>
-
-            <motion.div variants={fadeInUp} className="flex flex-wrap gap-4 mb-12">
-              <Link
-                href="/projects"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm bg-gradient-to-r from-[#8b5cf6] to-[#6366f1] text-white hover:opacity-90 transition-opacity shadow-[0_4px_20px_rgba(139,92,246,0.4)]"
-              >
-                View My Work <ArrowRight size={16} />
-              </Link>
-              <Link
-                href="/contact"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm border border-[var(--border-color)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[#8b5cf6]/40 bg-[var(--bg-secondary)] transition-all"
-              >
-                Get In Touch <MessageCircle size={16} />
-              </Link>
-            </motion.div>
-
-            {/* Stats */}
-            <motion.div
-              variants={fadeInUp}
-              className="grid grid-cols-3 gap-3 md:gap-6 pt-6 border-t border-[var(--border-color)]"
-            >
-              {PORTFOLIO.stats.map((stat) => (
-                <CounterStat
-                  key={stat.label}
-                  target={stat.value}
-                  label={stat.label}
-                  suffix={stat.suffix}
-                />
-              ))}
-            </motion.div>
-          </motion.div>
-
-          {/* Right column — floating cards */}
-          <motion.div
-            variants={staggerContainer}
-            initial="hidden"
-            animate="visible"
-            className="hidden lg:flex flex-col gap-4 items-end"
-          >
-            {PORTFOLIO.floatingCards.map((card, i) => {
-              const Icon = CARD_ICONS[card.icon];
-              return (
-                <motion.div
-                  key={card.title}
-                  variants={fadeInRight}
-                  className="float-card w-56 p-5 rounded-2xl border border-[var(--border-color)] bg-[var(--bg-secondary)] hover:border-[#8b5cf6]/40 transition-all"
-                  style={{ animationDelay: `${i * 1.5}s` }}
-                >
-                  <div className="w-9 h-9 rounded-xl bg-[#8b5cf6]/10 flex items-center justify-center mb-2">
-                    {Icon && <Icon size={18} className="text-[#8b5cf6]" />}
-                  </div>
-                  <div className="font-bold text-[var(--text-primary)] text-sm">
-                    {card.title}
-                  </div>
-                  <div className="text-xs text-[var(--text-muted)] mt-1">{card.desc}</div>
-                </motion.div>
-              );
-            })}
-          </motion.div>
-        </div>
-
-        {/* Scroll indicator */}
+      <div className="relative max-w-7xl mx-auto w-full flex-1 flex flex-col">
+        {/* Meta row */}
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 2 }}
-          className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-[var(--text-muted)]"
+          {...fadeUp(0.1)}
+          className="flex flex-wrap items-center justify-between gap-3 font-mono text-[11px] md:text-xs uppercase tracking-[0.2em] text-[var(--fg-3)]"
         >
-          <span className="text-xs font-mono">scroll</span>
-          <div className="w-5 h-8 border-2 border-[var(--text-muted)] rounded-full flex items-start justify-center pt-1.5">
-            <div className="w-1 h-2 rounded-full bg-[#8b5cf6]" style={{ animation: "bounce-scroll 1.5s ease-in-out infinite" }} />
-          </div>
+          <span>
+            Based in {PORTFOLIO.location} · <LocalTime />
+          </span>
+          <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[var(--line)] text-[var(--fg-2)]">
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full rounded-full bg-[#4ade80] opacity-70 animate-ping" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-[#4ade80]" />
+            </span>
+            Available for work
+          </span>
         </motion.div>
+
+        {/* Giant name */}
+        <motion.h1
+          style={{ y: nameY, scale: nameScale, opacity: fade }}
+          className="origin-bottom-left mt-auto pt-10 font-display font-bold tracking-[-0.055em] leading-[0.82] whitespace-nowrap text-[21vw] md:text-[20vw] xl:text-[17.5rem]"
+        >
+          <SplitText text={PORTFOLIO.name} by="char" play={play} delay={0.15} stagger={0.05} duration={1.2} />
+          <motion.span
+            initial={{ scale: 0 }}
+            animate={play ? { scale: 1 } : { scale: 0 }}
+            transition={{ duration: 0.8, ease: EASE, delay: 0.75 }}
+            className="inline-block w-[0.14em] h-[0.14em] ml-[0.04em] rounded-full bg-[var(--accent)] align-baseline"
+            aria-hidden
+          />
+        </motion.h1>
+
+        {/* Bottom row */}
+        <motion.div
+          style={{ y: contentY, opacity: fade }}
+          className="mt-8 md:mt-10 grid gap-10 md:grid-cols-[1fr_auto] items-end"
+        >
+          <div className="max-w-2xl">
+            <motion.p
+              {...fadeUp(0.55)}
+              className="font-display text-xl sm:text-2xl md:text-4xl font-medium tracking-tight leading-[1.1] mb-4"
+            >
+              <RoleRotator phrases={PORTFOLIO.roles} className="text-[var(--accent-text)]" />
+            </motion.p>
+            <motion.p {...fadeUp(0.65)} className="text-[var(--fg-2)] text-base md:text-lg leading-relaxed mb-8 max-w-xl">
+              I craft <span className="serif-accent text-[var(--fg)] text-[1.2em]">fluid</span>, performant mobile
+              apps with Kotlin &amp; Jetpack Compose — and I&apos;m bringing the same obsession for
+              detail to the web.
+            </motion.p>
+            <motion.div {...fadeUp(0.75)} className="flex flex-wrap items-center gap-3">
+              <Magnetic>
+                <Link
+                  href="/projects"
+                  className="group inline-flex items-center gap-3 h-14 pl-7 pr-2 rounded-full bg-[var(--fg)] text-[var(--bg)] font-semibold"
+                >
+                  View my work
+                  <span className="w-10 h-10 rounded-full bg-[var(--accent)] text-[var(--accent-ink)] flex items-center justify-center transition-transform duration-500 group-hover:rotate-45">
+                    <ArrowUpRight size={18} />
+                  </span>
+                </Link>
+              </Magnetic>
+              <Magnetic>
+                <Link
+                  href="/contact"
+                  className="inline-flex items-center h-14 px-7 rounded-full border border-[var(--line-strong)] font-semibold hover:bg-[var(--bg-2)] transition-colors"
+                >
+                  Get in touch
+                </Link>
+              </Magnetic>
+            </motion.div>
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.6, rotate: -30 }}
+            animate={play ? { opacity: 1, scale: 1, rotate: 0 } : {}}
+            transition={{ duration: 1.2, ease: EASE, delay: 0.6 }}
+            className="hidden md:block"
+          >
+            <CircleBadge text="• Android developer • Open to work • Kotlin & Compose " size={168}>
+              <div className="w-24 h-24 rounded-full overflow-hidden ring-1 ring-[var(--line)]">
+                <Image
+                  src={PORTFOLIO.avatar}
+                  alt={PORTFOLIO.name}
+                  width={96}
+                  height={96}
+                  className="w-full h-full object-cover"
+                  priority
+                />
+              </div>
+            </CircleBadge>
+          </motion.div>
+        </motion.div>
+
+        <motion.a
+          href="#about"
+          {...fadeUp(1)}
+          className="mt-10 self-start inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.2em] text-[var(--fg-3)] hover:text-[var(--fg)] transition-colors"
+        >
+          <motion.span
+            animate={{ y: [0, 4, 0] }}
+            transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+            className="inline-flex"
+          >
+            <ArrowDownRight size={14} />
+          </motion.span>
+          Scroll to explore
+        </motion.a>
       </div>
     </section>
   );

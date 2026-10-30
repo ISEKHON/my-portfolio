@@ -1,107 +1,100 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { motion } from "framer-motion";
-import { animate } from "animejs";
-import Navbar from "@/components/layout/Navbar";
-import Background from "@/components/layout/Background";
+import { useRef } from "react";
+import { motion, useScroll, useSpring } from "framer-motion";
+import { GraduationCap } from "lucide-react";
 import Footer from "@/components/layout/Footer";
-import BackToTop from "@/components/ui/BackToTop";
 import SectionHeader from "@/components/ui/SectionHeader";
-import TechBadge from "@/components/ui/TechBadge";
+import Reveal from "@/components/motion/Reveal";
 import { PORTFOLIO } from "@/lib/data";
-import { staggerContainer, fadeInLeft } from "@/lib/variants";
+import { EASE } from "@/lib/variants";
 
 export default function ExperiencePageClient() {
-  const lineRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const el = lineRef.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          observer.disconnect();
-          animate(el, {
-            scaleY: [0, 1],
-            duration: 1400,
-            ease: "outCubic",
-          });
-        }
-      },
-      { threshold: 0.05 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
+  const timelineRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: timelineRef, offset: ["start 70%", "end 60%"] });
+  const lineScale = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
 
   return (
-    <div className="min-h-screen">
-      <Background />
-      <Navbar />
-      <main className="pt-28 pb-24 px-5 max-w-4xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <SectionHeader
-            tag="Journey"
-            title="Experience & Timeline"
-            subtitle="My developer journey from the first line of code to today."
+    <>
+      <main className="pt-36 md:pt-44 pb-28 px-5 md:px-8 max-w-6xl mx-auto min-h-screen">
+        <SectionHeader
+          as="h1"
+          tag="Journey"
+          title="From first line"
+          accent="to today."
+          subtitle="My developer journey — the milestones, the stacks and what each chapter taught me."
+        />
+
+        <div ref={timelineRef} className="relative">
+          {/* Track + scroll-driven fill */}
+          <div className="absolute left-[7px] md:left-[calc(28%+7px)] top-2 bottom-2 w-px bg-[var(--line)]" />
+          <motion.div
+            style={{ scaleY: lineScale }}
+            className="absolute left-[7px] md:left-[calc(28%+7px)] top-2 bottom-2 w-px bg-[var(--accent-text)] origin-top"
           />
-        </motion.div>
 
-        <motion.div
-          variants={staggerContainer}
-          initial="hidden"
-          animate="visible"
-          className="relative"
-        >
-          {/* Vertical line */}
-          <div ref={lineRef} className="absolute left-4 md:left-5 top-0 bottom-0 w-px bg-gradient-to-b from-[#8b5cf6] via-[#6366f1] to-transparent opacity-30" style={{ transformOrigin: "top" }} />
-
-          <div className="space-y-10 pl-10 md:pl-14">
+          <div className="space-y-16 md:space-y-24">
             {PORTFOLIO.experience.map((entry, i) => (
-              <motion.div
-                key={i}
-                variants={fadeInLeft}
-                className="relative"
-              >
-                {/* Dot */}
-                <div className="absolute -left-[1.875rem] md:-left-[2.375rem] top-1.5 w-3.5 h-3.5 rounded-full border-2 border-[#8b5cf6] bg-[var(--bg-primary)]" />
+              <div key={i} className="relative grid md:grid-cols-[28%_1fr] gap-4 md:gap-0 pl-10 md:pl-0">
+                <Reveal y={20} className="md:pr-12 md:text-right">
+                  <span className="font-mono text-sm text-[var(--fg-3)]">{entry.year}</span>
+                </Reveal>
 
-                <div className="p-5 rounded-2xl border border-[var(--border-color)] bg-[var(--bg-secondary)] hover:border-[#8b5cf6]/30 transition-colors">
-                  <div className="flex items-start justify-between flex-wrap gap-2 mb-2">
-                    <div>
-                      <h3 className="font-bold text-[var(--text-primary)]">{entry.title}</h3>
-                      <div className="text-sm text-[#8b5cf6] font-medium">{entry.org}</div>
-                    </div>
-                    <span className="shrink-0 text-xs font-mono bg-[var(--bg-tertiary)] border border-[var(--border-color)] px-2 py-1 rounded-lg text-[var(--text-muted)]">
-                      {entry.year}
-                    </span>
-                  </div>
-                  <p className="text-sm text-[var(--text-secondary)] leading-relaxed mb-4">
-                    {entry.description}
-                  </p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {entry.tech.map((t) => (
-                      <span
+                <motion.span
+                  initial={{ scale: 0 }}
+                  whileInView={{ scale: 1 }}
+                  viewport={{ once: true, margin: "-30% 0px" }}
+                  transition={{ type: "spring", stiffness: 300, damping: 18 }}
+                  className="absolute left-0 md:left-[28%] top-1 w-[15px] h-[15px] rounded-full border-2 border-[var(--accent-text)] bg-[var(--bg)]"
+                />
+
+                <Reveal className="md:pl-14" delay={0.05}>
+                  <h2 className="font-display text-3xl md:text-5xl font-semibold tracking-[-0.03em] leading-tight">
+                    {entry.title}
+                  </h2>
+                  <div className="mt-1 mb-5 text-[var(--accent-text)] font-medium">{entry.org}</div>
+                  <p className="text-[var(--fg-2)] leading-relaxed max-w-xl mb-6">{entry.description}</p>
+                  <div className="flex flex-wrap gap-2">
+                    {entry.tech.map((t, ti) => (
+                      <motion.span
                         key={t}
-                        className="text-xs px-2 py-0.5 rounded-md bg-[var(--bg-tertiary)] text-[var(--text-muted)] border border-[var(--border-color)]"
+                        initial={{ opacity: 0, y: 10 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.5, ease: EASE, delay: 0.2 + ti * 0.05 }}
+                        className="text-xs px-3 py-1 rounded-full border border-[var(--line)] text-[var(--fg-2)]"
                       >
                         {t}
-                      </span>
+                      </motion.span>
                     ))}
                   </div>
-                </div>
-              </motion.div>
+                </Reveal>
+              </div>
             ))}
           </div>
-        </motion.div>
+        </div>
+
+        {/* Education */}
+        <section className="mt-32 md:mt-44">
+          <SectionHeader tag="Education" title="Still" accent="learning." />
+          {PORTFOLIO.education.map((edu) => (
+            <Reveal key={edu.degree}>
+              <div className="group relative overflow-hidden rounded-[28px] border border-[var(--line)] bg-[var(--bg-2)] p-8 md:p-12 grid md:grid-cols-[auto_1fr_auto] gap-6 md:gap-10 items-start">
+                <div className="w-14 h-14 rounded-full bg-[var(--accent)] text-[var(--accent-ink)] flex items-center justify-center transition-transform duration-700 group-hover:rotate-[360deg]">
+                  <GraduationCap size={24} />
+                </div>
+                <div>
+                  <h3 className="font-display text-2xl md:text-3xl font-semibold tracking-tight">{edu.degree}</h3>
+                  <div className="text-[var(--accent-text)] font-medium mt-1 mb-4">{edu.institution}</div>
+                  <p className="text-[var(--fg-2)] leading-relaxed max-w-2xl">{edu.description}</p>
+                </div>
+                <span className="font-mono text-sm text-[var(--fg-3)]">{edu.year}</span>
+              </div>
+            </Reveal>
+          ))}
+        </section>
       </main>
       <Footer />
-      <BackToTop />
-    </div>
+    </>
   );
 }
